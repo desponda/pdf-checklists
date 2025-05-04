@@ -1,0 +1,71 @@
+frontend:
+  name: frontend
+  image: ghcr.io/pdf-checklists-frontend
+  tag: latest
+  replicas: 2
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+  service:
+    type: ClusterIP
+    port: 80
+  ingress:
+    enabled: true
+    className: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - host: checklists.example.com
+        paths:
+          - path: /
+            pathType: Prefix
+
+backend:
+  name: backend
+  image: ghcr.io/pdf-checklists-backend
+  tag: latest
+  replicas: 2
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: 400m
+      memory: 512Mi
+  service:
+    type: ClusterIP
+    port: 3000
+
+global:
+  environment: production
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "metrics"
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  fsGroup: 2000
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+
+nodeSelector: {}
+tolerations: []
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 100
+      podAffinityTerm:
+        labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - pdf-checklists
+        topologyKey: kubernetes.io/hostname 

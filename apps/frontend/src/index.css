@@ -114,10 +114,14 @@
 }
 
 @layer base {
+  html, body {
+    font-family: Inter, Roboto, Montserrat, Arial, sans-serif;
+    font-weight: 300;
+    background-color: #09090b !important;
+    min-height: 100vh !important;
+    height: 100% !important;
+  }
   * {
     @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
   }
 }

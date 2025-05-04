@@ -1,0 +1,9 @@
+apiVersion: v2
+name: pdf-checklists
+description: A Helm chart for PDF Checklists application
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+
+maintainers:
+  - name: "PDF Checklists Team" 

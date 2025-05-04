@@ -1,3 +1,32 @@
+# Dependencies
 node_modules
+.npm
+.yarn-cache
+
+# Build outputs
+dist
+build
 *.pdf
-*/cache/*
+
+# Cache directories
+**/cache/
+**/cache/*
+**/.cache
+.cache/
+**/images/cache/
+**/pdfs/cache/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

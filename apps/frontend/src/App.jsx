@@ -3,9 +3,6 @@ import { fetchAircraftList, generatePDF } from './services/api';
 import AircraftSelector from './components/AircraftSelector';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import Welcome from './components/Welcome';
-import HelpSection from './components/HelpSection';
-import FloatingButton from './components/FloatingButton';
 import ModeToggle from './components/ModeToggle';
 import { Toaster } from '@/components/ui/sonner.jsx';
 import { toast } from 'sonner';
@@ -18,14 +15,8 @@ function App() {
     const savedPreference = localStorage.getItem('preferDarkChecklist');
     return savedPreference === null ? true : savedPreference === 'true';
   });
-  const [selectedAircraft, setSelectedAircraft] = useState(() => {
-    const savedAircraft = localStorage.getItem('lastSelectedAircraft');
-    return savedAircraft || null;
-  });
-  const [selectedVariant, setSelectedVariant] = useState(() => {
-    const savedVariant = localStorage.getItem('lastSelectedVariant');
-    return savedVariant || null;
-  });
+  const [selectedAircraft, setSelectedAircraft] = useState(null);
+  const [selectedVariant, setSelectedVariant] = useState(null);
   const [generatingPDF, setGeneratingPDF] = useState(false);
   const [pdfProgress, setPdfProgress] = useState(0);
   const [favorites, setFavorites] = useState(() => {
@@ -53,8 +44,6 @@ function App() {
   const handleAircraftSelect = (aircraftId, variantType) => {
     setSelectedAircraft(aircraftId);
     setSelectedVariant(variantType);
-    localStorage.setItem('lastSelectedAircraft', aircraftId);
-    localStorage.setItem('lastSelectedVariant', variantType);
   };
 
   // Handle checklist variant preference toggle
@@ -70,35 +59,32 @@ function App() {
         const darkVariant = Object.keys(aircraft.variants || {}).find(v => v.toLowerCase().includes('dark'));
         if (darkVariant) {
           setSelectedVariant(darkVariant);
-          localStorage.setItem('lastSelectedVariant', darkVariant);
         }
       } else {
         // Prefer standard variant if available
         if (aircraft.standard) {
           setSelectedVariant('standard');
-          localStorage.setItem('lastSelectedVariant', 'standard');
         }
       }
     }
   };
 
-  const handleGeneratePDF = async () => {
-    if (!selectedAircraft || !selectedVariant) return;
+  // Accept aircraftId and variantType as parameters
+  const handleGeneratePDF = async (aircraftId, variantType) => {
+    if (!aircraftId || !variantType) return;
     try {
       setGeneratingPDF(true);
       setError(null);
       setPdfProgress(0);
       let pages;
       let aircraftName;
-      if (selectedVariant === 'standard') {
-        pages = aircraftData[selectedAircraft].standard.pages;
-        aircraftName = aircraftData[selectedAircraft].standard.name;
+      if (variantType === 'standard') {
+        pages = aircraftData[aircraftId].standard.pages;
+        aircraftName = aircraftData[aircraftId].standard.name;
       } else {
-        pages = aircraftData[selectedAircraft].variants[selectedVariant].pages;
-        aircraftName = aircraftData[selectedAircraft].variants[selectedVariant].name;
+        pages = aircraftData[aircraftId].variants[variantType].pages;
+        aircraftName = aircraftData[aircraftId].variants[variantType].name;
       }
-      localStorage.setItem('lastSelectedAircraft', selectedAircraft);
-      localStorage.setItem('lastSelectedVariant', selectedVariant);
       setPdfProgress(5);
       toast.info(`Generating PDF for ${aircraftName} with ${pages.length} pages...`);
       const progressInterval = setInterval(() => {
@@ -116,7 +102,7 @@ function App() {
       const url = window.URL.createObjectURL(new Blob([pdfBlob], { type: 'application/pdf' }));
       const link = document.createElement('a');
       link.href = url;
-      const filename = `${selectedAircraft}${selectedVariant !== 'standard' ? '_' + selectedVariant : ''}_checklist.pdf`;
+      const filename = `${aircraftId}${variantType !== 'standard' ? '_' + variantType : ''}_checklist.pdf`;
       link.setAttribute('download', filename);
       document.body.appendChild(link);
       link.click();
@@ -161,8 +147,6 @@ function App() {
             </div>
           </div>
         )}
-        <Welcome />
-        <HelpSection />
         <section className="section mt-8">
           <h2 className="section-title text-xl font-semibold text-zinc-200 mb-4">Aircraft Checklist Selection</h2>
           {loading ? (
@@ -183,15 +167,9 @@ function App() {
                 selectedAircraft={selectedAircraft}
                 selectedVariant={selectedVariant}
                 onSelect={handleAircraftSelect}
+                onGenerate={handleGeneratePDF}
                 preferDarkChecklist={preferDarkChecklist}
-              />
-              <FloatingButton
-                onClick={handleGeneratePDF}
-                disabled={!selectedAircraft || !selectedVariant}
-                loading={generatingPDF}
-                selectedAircraft={selectedAircraft}
-                selectedVariant={selectedVariant}
-                progress={pdfProgress}
+                generatingPDF={generatingPDF}
               />
             </>
           )}
