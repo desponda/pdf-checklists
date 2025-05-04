@@ -1,24 +1,63 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 
-const AircraftSelector = ({ aircraftData, selectedAircraft, selectedVariant, onSelect }) => {
+const AircraftSelector = ({ aircraftData, selectedAircraft, selectedVariant, onSelect, preferDarkMode }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [showDarkOnly, setShowDarkOnly] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('all');
 
-  // Filter aircraft based on search query and dark mode filter
-  const filteredAircraftIds = Object.keys(aircraftData).filter(aircraftId => {
-    const matchesSearch = aircraftId.toLowerCase().includes(searchQuery.toLowerCase());
+  // Define aircraft categories
+  const aircraftCategories = useMemo(() => {
+    return {
+      'all': 'All Aircraft',
+      'airliner': 'Airliners',
+      'general': 'General Aviation',
+      'military': 'Military',
+      'helicopter': 'Helicopters',
+      'other': 'Other Aircraft'
+    };
+  }, []);
+  
+  // Categorize aircraft
+  const categorizedAircraft = useMemo(() => {
+    const categorized = {
+      'airliner': [],
+      'general': [],
+      'military': [],
+      'helicopter': [],
+      'other': []
+    };
     
-    // Filter by dark mode if enabled
-    if (showDarkOnly) {
-      const aircraft = aircraftData[aircraftId];
-      const hasDarkVariant = Object.keys(aircraft.variants || {}).some(variant => 
-        variant.toLowerCase().includes('dark')
-      );
-      return matchesSearch && hasDarkVariant;
+    Object.keys(aircraftData).forEach(aircraftId => {
+      // Simple categorization based on aircraft ID
+      if (/^A[0-9]|^B[0-9]|^EMB|^CRJ|^MD|Concorde|Fokker|ATR/.test(aircraftId)) {
+        categorized.airliner.push(aircraftId);
+      } else if (/Cessna|Piper|Beech|Mooney|Baron|Bonanza|DA_|Pilatus|TBM|Phenom|Citation|Kodiak|Learjet|King_Air|DHC/.test(aircraftId)) {
+        categorized.general.push(aircraftId);
+      } else if (/F_|F[0-9]|FA_|Spitfire|Tornado|C_17|T_|Eurofighter|Hawk|Vulcan/.test(aircraftId)) {
+        categorized.military.push(aircraftId);
+      } else if (/Bell|H135|H145|Huey|Osprey/.test(aircraftId)) {
+        categorized.helicopter.push(aircraftId);
+      } else {
+        categorized.other.push(aircraftId);
+      }
+    });
+    
+    return categorized;
+  }, [aircraftData]);
+  
+  // Filter aircraft based on search query, category, and considering dark mode preferences
+  const filteredAircraftIds = useMemo(() => {
+    // First filter by search and category
+    let filteredIds = Object.keys(aircraftData).filter(aircraftId => {
+      return aircraftId.toLowerCase().includes(searchQuery.toLowerCase());
+    });
+    
+    // Filter by category if not "all"
+    if (selectedCategory !== 'all') {
+      filteredIds = filteredIds.filter(id => categorizedAircraft[selectedCategory].includes(id));
     }
     
-    return matchesSearch;
-  });
+    return filteredIds;
+  }, [aircraftData, searchQuery, selectedCategory, categorizedAircraft]);
 
   return (
     <>
@@ -42,19 +81,25 @@ const AircraftSelector = ({ aircraftData, selectedAircraft, selectedVariant, onS
           )}
         </div>
         
-        <div className="filter-options">
-          <label className="filter-checkbox">
-            <input 
-              type="checkbox" 
-              checked={showDarkOnly} 
-              onChange={() => setShowDarkOnly(!showDarkOnly)} 
-            />
-            <span>Show only aircraft with dark mode</span>
-          </label>
+        <div className="category-filter">
+          <label htmlFor="category-select">Category:</label>
+          <select 
+            id="category-select" 
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="category-select"
+          >
+            {Object.entries(aircraftCategories).map(([value, label]) => (
+              <option key={value} value={value}>
+                {label} {value !== 'all' && `(${categorizedAircraft[value].length})`}
+              </option>
+            ))}
+          </select>
         </div>
         
         <div className="results-count">
           Showing {filteredAircraftIds.length} of {Object.keys(aircraftData).length} aircraft
+          {preferDarkMode && <span className="dark-mode-indicator"> (Dark mode preferred)</span>}
         </div>
       </div>
       
@@ -62,18 +107,34 @@ const AircraftSelector = ({ aircraftData, selectedAircraft, selectedVariant, onS
         {filteredAircraftIds.length === 0 ? (
           <div className="no-results">
             <p>No aircraft match your search criteria</p>
-            <button onClick={() => { setSearchQuery(''); setShowDarkOnly(false); }}>
+            <button onClick={() => setSearchQuery('')}>
               Clear filters
             </button>
           </div>
         ) : (
-          filteredAircraftIds.map((aircraftId) => {
+          filteredAircraftIds
+            .map((aircraftId) => {
             const aircraft = aircraftData[aircraftId];
             const hasStandard = aircraft.standard !== undefined;
             const hasVariants = Object.keys(aircraft.variants || {}).length > 0;
+            const hasDarkVariant = hasVariants && Object.keys(aircraft.variants).some(v => 
+              v.toLowerCase().includes('dark')
+            );
+            
+            // Determine which variants to show based on mode preference
+            let showStandard = hasStandard && (!preferDarkMode || !hasDarkVariant);
+            let variantsToShow = Object.keys(aircraft.variants || {}).filter(variant => {
+              const isDarkVariant = variant.toLowerCase().includes('dark');
+              return preferDarkMode ? isDarkVariant : !isDarkVariant;
+            });
+            
+            // Count total pages for visible variants
             const totalPages = 
-              (hasStandard ? aircraft.standard.pages.length : 0) + 
-              Object.values(aircraft.variants || {}).reduce((sum, variant) => sum + variant.pages.length, 0);
+              (showStandard ? aircraft.standard.pages.length : 0) + 
+              variantsToShow.reduce((sum, variantId) => sum + aircraft.variants[variantId].pages.length, 0);
+            
+            // Skip aircraft that have no visible variants after filtering
+            if (!showStandard && variantsToShow.length === 0) return null;
             
             return (
               <div 
@@ -83,15 +144,12 @@ const AircraftSelector = ({ aircraftData, selectedAircraft, selectedVariant, onS
                 <div className="aircraft-header">
                   <h3 className="aircraft-title">{aircraftId}</h3>
                   <div className="aircraft-meta">
-                    <span className="total-pages">{totalPages} pages total</span>
-                    {Object.keys(aircraft.variants || {}).some(v => v.toLowerCase().includes('dark')) && (
-                      <span className="dark-badge">Dark Mode</span>
-                    )}
+                    <span className="total-pages">{totalPages} pages</span>
                   </div>
                 </div>
                 
                 <div className="aircraft-body">
-                  {hasStandard && (
+                  {showStandard && (
                     <div className="variant-option">
                       <input 
                         type="radio"
@@ -110,7 +168,7 @@ const AircraftSelector = ({ aircraftData, selectedAircraft, selectedVariant, onS
                     </div>
                   )}
                   
-                  {hasVariants && Object.keys(aircraft.variants).map((variantId) => {
+                  {variantsToShow.map((variantId) => {
                     const variant = aircraft.variants[variantId];
                     return (
                       <div className="variant-option" key={`${aircraftId}-${variantId}`}>
@@ -135,6 +193,8 @@ const AircraftSelector = ({ aircraftData, selectedAircraft, selectedVariant, onS
               </div>
             );
           })
+          // Filter out null values (aircraft with no visible variants)
+          .filter(card => card !== null)
         )}
       </div>
     </>

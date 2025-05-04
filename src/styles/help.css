@@ -1,0 +1,146 @@
+/* Help Section Styles */
+.help-section {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  border: 1px solid #e0e0e0;
+  overflow: hidden;
+}
+
+.help-header {
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.help-header:hover {
+  background-color: #f1f3f5;
+}
+
+.help-section h3 {
+  color: #333;
+  font-weight: 500;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.help-icon {
+  margin-right: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.help-toggle {
+  background: none;
+  border: none;
+  color: #0747A6;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.help-content {
+  padding: 0 1.5rem 1.5rem;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+}
+
+.help-section.expanded .help-content {
+  max-height: 1500px; /* Arbitrary large value to accommodate content */
+  padding: 0 1.5rem 1.5rem;
+}
+
+.help-section.collapsed .help-content {
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.help-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.step {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.step-number {
+  background-color: #0747A6;
+  color: white;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.step-content {
+  flex: 1;
+}
+
+.step-content strong {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.step-content p {
+  color: #666;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* Help section tips */
+.help-note {
+  background-color: #FFFAE6;
+  border-left: 4px solid #FFAB00;
+  padding: 1rem;
+  margin-top: 2rem;
+  border-radius: 4px;
+}
+
+.help-note h4 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #172B4D;
+}
+
+.help-note p {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.help-note a {
+  color: #0747A6;
+  text-decoration: none;
+}
+
+.help-note a:hover {
+  text-decoration: underline;
+}
+
+.tips-list {
+  margin: 0 0 1.5rem 1.25rem;
+  padding: 0;
+}
+
+.tips-list li {
+  margin-bottom: 0.5rem;
+  color: #505F79;
+  font-size: 0.9rem;
+}
+
+.tips-list strong {
+  color: #172B4D;
+}

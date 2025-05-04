@@ -1,0 +1,10 @@
+{
+    "watch": [
+        "server/"
+    ],
+    "ignore": [
+        "server/cache/*",
+        "server/cache/images/*",
+        "server/cache/pdfs/*"
+    ]
+}

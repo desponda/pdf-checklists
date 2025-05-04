@@ -15,7 +15,34 @@ A modern web application that allows users to select aircraft checklists and con
 - **Backend:** Node.js with Express
 - **PDF Generation:** pdf-lib
 - **API Calls:** Axios
-- **Styling:** Custom CSS
+- **Styling:** Modular CSS + Styled Components
+
+## Project Structure
+
+```
+pdf-checklists/
+├── public/              # Static public assets
+├── server/              # Backend server code
+│   ├── routes/          # API route handlers
+│   │   ├── files.js     # Aircraft file index routes
+│   │   └── pdf.js       # PDF generation routes
+│   ├── utils/           # Utility functions
+│   │   └── pdfGenerator.js  # PDF generation logic
+│   └── server.js        # Main server application
+├── src/                 # React frontend code
+│   ├── components/      # React components
+│   ├── services/        # API service functions
+│   ├── styles/          # CSS modules
+│   │   ├── base.css     # Base styling
+│   │   ├── layout.css   # Layout components
+│   │   ├── aircraft.css # Aircraft components
+│   │   ├── ...          # Other component styles
+│   │   └── index.css    # CSS entry point
+│   ├── ThemeProvider.js # Styled-components theme
+│   ├── App.js           # Main React component
+│   └── index.js         # React entry point
+└── server.js            # Server entry point
+```
 
 ## Getting Started
 

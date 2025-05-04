@@ -1,0 +1,25 @@
+/* Header styles */
+
+header {
+  /* Styles now handled by styled-components in Header.js for glassy sticky effect */
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+/* Footer styles */
+footer {
+  background: rgba(255, 255, 255, 0.85);
+  padding: 1.5rem;
+  text-align: center;
+  color: #505F79;
+  font-size: 1rem;
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.04);
+  backdrop-filter: blur(4px);
+}
