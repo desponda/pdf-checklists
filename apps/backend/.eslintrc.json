@@ -2,7 +2,8 @@
   "env": {
     "node": true,
     "es2021": true,
-    "commonjs": true
+    "commonjs": true,
+    "jest": true
   },
   "extends": [
     "eslint:recommended",
@@ -25,6 +26,17 @@
     "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
     "node/no-unsupported-features/es-syntax": ["error", {
       "version": ">=10.0.0"
+    }],
+    "node/no-unpublished-require": ["error", {
+      "allowModules": ["supertest"]
     }]
-  }
+  },
+  "overrides": [
+    {
+      "files": ["**/__tests__/**/*.js", "**/*.test.js"],
+      "env": {
+        "jest": true
+      }
+    }
+  ]
 } 
