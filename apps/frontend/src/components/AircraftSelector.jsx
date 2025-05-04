@@ -1,9 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.jsx";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card.jsx";
 import { Input } from "@/components/ui/input.jsx";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { useState, useMemo } from "react";
 
-export default function AircraftSelector({ aircraftData, selectedAircraft, selectedVariant, onSelect, onGenerate, preferDarkChecklist, generatingPDF }) {
+export default function AircraftSelector({ aircraftData, selectedAircraft, _selectedVariant, onSelect, onGenerate, preferDarkChecklist, generatingPDF }) {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All Aircraft");
 

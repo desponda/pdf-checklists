@@ -1,6 +1,6 @@
 const { PDFDocument } = require('pdf-lib');
 const fetch = require('node-fetch');
-const { Buffer } = require('buffer');
+// Use global Buffer instead of importing from buffer module
 const fs = require('fs');
 const path = require('path');
 
@@ -40,7 +40,6 @@ async function generatePDF(pages) {
       const cacheFile = path.join(cacheDir, pageInfo.filename);
 
       let imageBuffer = null;
-      let fromCache = false;
       // Check if cache file exists and is <24h old
       if (fs.existsSync(cacheFile)) {
         const stats = fs.statSync(cacheFile);
@@ -49,7 +48,6 @@ async function generatePDF(pages) {
         if ((now - mtime) < 24 * 60 * 60 * 1000) {
           // Use cached image
           imageBuffer = fs.readFileSync(cacheFile);
-          fromCache = true;
           console.log(`Loaded image from cache: ${cacheFile}`);
         }
       }
@@ -174,7 +172,7 @@ async function generatePDF(pages) {
  */
 function addWarningPage(pdfDoc, successCount, totalPages, errors) {
   const warningPage = pdfDoc.addPage([600, 800]);
-  const { width, height } = warningPage.getSize();
+  const { height } = warningPage.getSize();
 
   warningPage.drawText('Warning: Some images failed to load', {
     x: 50,

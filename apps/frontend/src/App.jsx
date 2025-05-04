@@ -18,11 +18,6 @@ function App() {
   const [selectedAircraft, setSelectedAircraft] = useState(null);
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [generatingPDF, setGeneratingPDF] = useState(false);
-  const [pdfProgress, setPdfProgress] = useState(0);
-  const [favorites, setFavorites] = useState(() => {
-    const savedFavorites = localStorage.getItem('favoriteAircraft');
-    return savedFavorites ? JSON.parse(savedFavorites) : [];
-  });
 
   useEffect(() => {
     const loadAircraftData = async () => {
@@ -75,7 +70,6 @@ function App() {
     try {
       setGeneratingPDF(true);
       setError(null);
-      setPdfProgress(0);
       let pages;
       let aircraftName;
       if (variantType === 'standard') {
@@ -85,20 +79,11 @@ function App() {
         pages = aircraftData[aircraftId].variants[variantType].pages;
         aircraftName = aircraftData[aircraftId].variants[variantType].name;
       }
-      setPdfProgress(5);
       toast.info(`Generating PDF for ${aircraftName} with ${pages.length} pages...`);
-      const progressInterval = setInterval(() => {
-        setPdfProgress(prev => {
-          const newProgress = prev + 5;
-          return newProgress < 90 ? newProgress : prev;
-        });
-      }, 500);
       const pdfBlob = await generatePDF(pages);
       if (!pdfBlob || pdfBlob.size === 0) {
         throw new Error('Received empty PDF from server');
       }
-      clearInterval(progressInterval);
-      setPdfProgress(100);
       const url = window.URL.createObjectURL(new Blob([pdfBlob], { type: 'application/pdf' }));
       const link = document.createElement('a');
       link.href = url;
@@ -129,7 +114,6 @@ function App() {
       setError(errorMessage);
       toast.error(errorMessage);
       console.error('Error generating PDF:', err);
-      setPdfProgress(0);
     } finally {
       setGeneratingPDF(false);
     }

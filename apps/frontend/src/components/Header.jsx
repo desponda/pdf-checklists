@@ -1,5 +1,3 @@
-import { Switch } from "@/components/ui/switch.jsx";
-import { Button } from "@/components/ui/button.jsx";
 import React from "react";
 
 function JetIcon({ className }) {
