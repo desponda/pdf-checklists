@@ -1,89 +1,168 @@
-# PDF Checklists Project - Development Status
+# PDF Checklists - Development Guide
 
-## How to Resume Development
+## Development Environment
 
-When you resume work tomorrow, follow these steps:
+### VS Code Remote Container (Recommended)
+1. Install VS Code and Docker
+2. Install "Remote - Containers" extension
+3. Open project in VS Code
+4. Click "Reopen in Container" when prompted
+5. Container includes:
+   - Node.js 20
+   - Docker-in-Docker
+   - Kubernetes tools
+   - Development extensions
 
-1. Start the development server with:
+### Local Development
+1. Install Node.js 20+
+2. Install dependencies:
    ```bash
-   npm run dev
+   make install
+   ```
+3. Start development:
+   ```bash
+   make dev-up
    ```
 
-2. This will start:
-   - Backend server on port 5000
-   - Frontend React app on port 3000
+## Project Structure
 
-3. Access the application at http://localhost:3000
-   
-4. If port conflicts occur, make sure no other services are using port 5000 by running:
-   ```bash
-   lsof -i :5000
-   ```
-   And terminate any conflicting processes.
+### Monorepo Organization
+```
+apps/
+├── frontend/           # React application
+│   ├── src/           # Source code
+│   ├── public/        # Static assets
+│   └── package.json   # Frontend dependencies
+└── backend/           # Express application
+    ├── server/        # Server code
+    └── package.json   # Backend dependencies
+```
 
-## Current Status (May 4, 2025)
+### Development Tools
+- Vite for frontend development
+- Nodemon for backend auto-reload
+- ESLint + Prettier for code quality
+- Jest and Vitest for testing
 
-We've successfully implemented and fixed:
+## Current Status (Updated May 2024)
 
-1. Backend API for file parsing and PDF generation
-   - Fixed issue with carriage returns in filenames
-   - Enhanced PDF generation with error handling and timeout protection
-   - Successfully generating and downloading PDFs
-
-2. Frontend React Application
+### Completed Features
+1. **Frontend**
+   - Modern UI with shadcn/ui components
+   - Responsive design implementation
+   - Dark/light mode support
+   - PDF generation interface
    - Aircraft selection component
-   - PDF generation functionality
-   - Basic UI components (Header, Footer, Welcome)
 
-## Port Configuration Issues
+2. **Backend**
+   - RESTful API implementation
+   - PDF generation with caching
+   - Error handling and logging
+   - Health check endpoints
 
-Currently experiencing a port conflict where both the Node.js server and React development server try to use port 5000:
+3. **Infrastructure**
+   - Development container setup
+   - Kubernetes deployment configuration
+   - GitHub Actions CI/CD pipeline
+   - Docker multi-stage builds
 
+### In Progress
+1. **Frontend Enhancements**
+   - [ ] Progress tracking for PDF generation
+   - [ ] Enhanced error notifications
+   - [ ] Checklist preview functionality
+   - [ ] Search and filtering improvements
+
+2. **Backend Optimizations**
+   - [ ] Cache optimization
+   - [ ] Image processing improvements
+   - [ ] API rate limiting
+   - [ ] Enhanced error recovery
+
+3. **Infrastructure**
+   - [ ] Monitoring setup
+   - [ ] Automated scaling
+   - [ ] Backup strategy
+   - [ ] CDN integration
+
+## Development Workflow
+
+### Starting Development
+```bash
+# Start all services
+make dev-up
+
+# Stop services
+make dev-down
+
+# Run tests
+make test
+
+# Run linting
+make lint
 ```
-[0] Server running on port 5000
-[1] Something is already running on port 5000.
-[1] npm run client exited with code 0
+
+### Building for Production
+```bash
+# Build Docker images
+make build
+
+# Deploy to Kubernetes
+make deploy
 ```
 
-## Next Steps
+### Common Development Tasks
 
-1. **Fix Port Configuration**
-   - Update the React development server to use a different port (3000 instead of 5000)
-   - Ensure proper proxy configuration in package.json
+#### Adding New Dependencies
+```bash
+# Frontend dependencies
+npm install package-name --workspace=@pdf-checklists/frontend
 
-2. **Enhance User Experience**
-   - Add loading indicators during PDF generation
-   - Implement progress tracking for PDF generation
-   - Add better error notifications
-   - Add help section explaining how to use the application
+# Backend dependencies
+npm install package-name --workspace=@pdf-checklists/backend
+```
 
-3. **UI Improvements**
-   - Enhance AircraftSelector with better visual grouping
-   - Add search/filter functionality for aircraft selection
-   - Improve overall responsive design
+#### Running Individual Services
+```bash
+# Frontend only
+npm run dev --workspace=@pdf-checklists/frontend
 
-4. **Functionality Enhancements**
-   - Add option to select specific checklist pages
-   - Remember user's last selection
-   - Add thumbnail previews before generating PDF
+# Backend only
+npm run dev --workspace=@pdf-checklists/backend
+```
 
-5. **Testing**
-   - Comprehensive testing of PDF generation with different aircraft models
-   - Error recovery testing
-   - Browser compatibility testing
+## Troubleshooting
 
-## Implementation Notes
+### Common Issues
 
-The PDF generation process has been improved with:
-- Timeout configuration to prevent hanging on image fetch
-- Proper error handling for each image
-- Warning page when some images fail to load
-- Document metadata information
+1. **Port Conflicts**
+   - Frontend uses port 3000
+   - Backend uses port 3001
+   - Solution: Use `make dev-down` to clean up
 
-The application currently has a good structure with separate components and services, making it maintainable and extendable.
+2. **Development Container**
+   - Issue: Container not rebuilding
+   - Solution: Use VS Code "Rebuild Container" command
+
+3. **Hot Reload**
+   - Frontend uses Vite HMR
+   - Backend uses Nodemon
+   - Both should auto-reload on changes
 
 ## Resources
 
-- PDF Library: pdf-lib
-- API Endpoint: https://msfschecklist.de/ebag/
-- File Index: https://msfschecklist.de/ebag/file_index.js?dev=21
+### Documentation
+- [Vite](https://vitejs.dev/)
+- [shadcn/ui](https://ui.shadcn.com/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Express.js](https://expressjs.com/)
+
+### API Endpoints
+- Checklist API: https://msfschecklist.de/ebag/
+- File Index: https://msfschecklist.de/ebag/file_index.js
+
+### Tools
+- PDF Generation: pdf-lib
+- Testing: Jest/Vitest
+- Linting: ESLint
+- Formatting: Prettier

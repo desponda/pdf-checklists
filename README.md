@@ -1,108 +1,137 @@
-# Aircraft Checklist PDF Generator
+# Flight Simulation Checklists
 
-A modern web application that allows users to select aircraft checklists and convert them into downloadable PDF files. The application fetches checklist images from msfschecklist.de and compiles them into a single PDF document.
+A modern web application for generating aircraft checklists as downloadable PDFs. Built with a modern monorepo structure, the application fetches checklist images from msfschecklist.de and compiles them into professional PDF documents.
 
 ## Features
 
-- Browse available aircraft checklists
-- Choose between standard and dark mode variants
-- Generate and download PDF checklists
-- Responsive design for mobile and desktop use
+- 🛩️ Browse available aircraft checklists
+- 🌓 Automatic dark/light mode support
+- 📑 Generate and download PDF checklists
+- 📱 Responsive design with modern UI
+- 🚀 Fast and efficient caching system
+- 🔄 Real-time updates and hot reloading
 
 ## Tech Stack
 
-- **Frontend:** React.js with Tailwind CSS and shadcn/ui
-- **Backend:** Node.js with Express
-- **PDF Generation:** pdf-lib
-- **API Calls:** Axios
-- **Styling:** Tailwind CSS, shadcn/ui
+### Frontend
+- React with Vite
+- Tailwind CSS for styling
+- shadcn/ui for components
+- Modern animations and transitions
 
-## Tailwind CSS & shadcn/ui
+### Backend
+- Node.js with Express
+- PDF generation with pdf-lib
+- Efficient caching system
+- RESTful API design
 
-This project uses [Tailwind CSS](https://tailwindcss.com/) for utility-first styling and [shadcn/ui](https://ui.shadcn.com/) for accessible, beautiful React components. All custom CSS and styled-components have been removed in favor of this modern stack.
-
-- To customize styles, edit `tailwind.config.js` and use Tailwind utility classes in your components.
-- To add new UI components, use shadcn/ui or Headless UI for best accessibility and design.
-- Dark mode is enabled via Tailwind's `dark` class strategy.
+### Infrastructure
+- Kubernetes deployment ready
+- GitHub Actions CI/CD
+- Docker containerization
+- Helm charts for deployment
 
 ## Project Structure
 
 ```
 pdf-checklists/
-├── public/              # Static public assets
-├── server/              # Backend server code
-│   ├── routes/          # API route handlers
-│   │   ├── files.js     # Aircraft file index routes
-│   │   └── pdf.js       # PDF generation routes
-│   ├── utils/           # Utility functions
-│   │   └── pdfGenerator.js  # PDF generation logic
-│   └── server.js        # Main server application
-├── src/                 # React frontend code
-│   ├── components/      # React components
-│   ├── services/        # API service functions
-│   ├── styles/          # CSS modules
-│   │   ├── base.css     # Base styling
-│   │   ├── layout.css   # Layout components
-│   │   ├── aircraft.css # Aircraft components
-│   │   ├── ...          # Other component styles
-│   │   └── index.css    # CSS entry point
-│   ├── ThemeProvider.js # Styled-components theme
-│   ├── App.js           # Main React component
-│   └── index.js         # React entry point
-└── server.js            # Server entry point
+├── apps/                      # Application code
+│   ├── frontend/             # Frontend React application
+│   │   ├── src/             # Source code
+│   │   ├── public/          # Static assets
+│   │   └── Dockerfile       # Frontend container
+│   └── backend/             # Backend Express application
+│       ├── server/          # Server code
+│       └── Dockerfile       # Backend container
+├── deploy/                   # Deployment configurations
+│   ├── docker/              # Docker configurations
+│   ├── helm/                # Kubernetes Helm charts
+│   └── scripts/             # Deployment scripts
+├── docs/                     # Documentation
+└── .devcontainer/           # Development container
 ```
 
-## Getting Started
+## Development
 
 ### Prerequisites
+- Node.js >= 20.x
+- VS Code with Remote Containers extension (recommended)
+- Docker and Kubernetes for deployment
 
-- Node.js (>= 12.x)
-- npm (>= 6.x)
+### Quick Start
 
-### Installation
-
-1. Clone the repository
+1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/aircraft-checklist-pdf-generator.git
-   cd aircraft-checklist-pdf-generator
+   git clone https://github.com/yourusername/pdf-checklists.git
+   cd pdf-checklists
    ```
 
-2. Install dependencies
+2. Install dependencies:
    ```bash
-   npm install
+   make install
    ```
 
-3. Start the development server
+3. Start development servers:
    ```bash
-   npm run dev
+   make dev-up
    ```
 
-This will start both the backend server and the React development server concurrently.
+The application will be available at:
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:3001
 
-- Backend server runs on http://localhost:5000
-- Frontend development server runs on http://localhost:3000
+### Development with VS Code Remote Containers
 
-### Production Build
+1. Open the project in VS Code
+2. Click "Reopen in Container" when prompted
+3. Wait for the container to build
+4. Run `make dev-up` to start development servers
 
-To create a production build, run:
+## Deployment
+
+### Local Docker Build
 ```bash
-npm run build
+make build
 ```
 
-Then start the server:
+### Kubernetes Deployment
 ```bash
-npm start
+make deploy
 ```
 
-The production server will serve the static files from the build directory and handle API requests.
+### Production URLs
+- Configure the domain in `deploy/helm/pdf-checklists/values.yaml`
+- Default: https://checklists.example.com
 
-## How It Works
+## Architecture
 
-1. The application fetches a list of available aircraft checklist files from msfschecklist.de
-2. Users can browse and select the desired aircraft and variant (standard or dark mode)
-3. When a user clicks "Generate PDF", the application fetches the individual checklist images
-4. The images are compiled into a single PDF document
-5. The PDF is sent to the user's browser for download
+### Frontend
+- Modern React with Vite for fast development
+- Tailwind CSS for utility-first styling
+- shadcn/ui for accessible components
+- Efficient state management
+- Responsive design system
+
+### Backend
+- Express.js REST API
+- PDF generation with caching
+- Image optimization
+- Error handling and logging
+- Health checks and monitoring
+
+### Infrastructure
+- Multi-stage Docker builds
+- Kubernetes deployment with Helm
+- GitHub Actions automation
+- Development container support
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
 
 ## License
 
