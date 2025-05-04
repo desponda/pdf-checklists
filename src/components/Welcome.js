@@ -2,25 +2,25 @@ import React from 'react';
 import styled from 'styled-components';
 
 const WelcomeContainer = styled.div`
-  margin-bottom: 2rem;
-  padding: 2.2rem 2.5rem 1.7rem 2.5rem;
-  background: rgba(24,28,36, 0.98);
-  color: #f3f3f3;
-  border-radius: 18px;
-  border: 1.5px solid #232526;
-  box-shadow: 0 8px 32px 0 rgba(0,0,0,0.22);
+  margin-bottom: ${({ theme }) => theme.spacing.lg};
+  padding: ${({ theme }) => theme.spacing.xl};
+  background: ${({ theme }) => theme.colors.surface.primary};
+  color: ${({ theme }) => theme.colors.text.main};
+  border-radius: ${({ theme }) => theme.borderRadius.large};
+  border: 1.5px solid ${({ theme }) => theme.colors.border};
+  box-shadow: ${({ theme }) => theme.shadows.large};
   max-width: 900px;
   margin-left: auto;
   margin-right: auto;
 `;
 
 const WelcomeTitle = styled.h2`
-  font-size: 2rem;
-  color: #fff;
-  margin-bottom: 1.1rem;
-  font-weight: 800;
+  font-size: ${({ theme }) => theme.typography.heading.h1};
+  color: ${({ theme }) => theme.colors.text.heading};
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
   letter-spacing: 0.01em;
-  text-shadow: 0 2px 12px rgba(0,0,0,0.18);
+  text-shadow: ${({ theme }) => theme.shadows.medium};
 `;
 
 const WelcomeText = styled.p`

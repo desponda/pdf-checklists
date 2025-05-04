@@ -5,11 +5,12 @@ const ModeWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 0.5rem 0 1.5rem;
-  padding: 1.2rem;
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  margin: ${({ theme }) => theme.spacing.sm} 0 ${({ theme }) => theme.spacing.lg};
+  padding: ${({ theme }) => theme.spacing.md};
+  background-color: ${({ theme }) => theme.colors.surface.primary};
+  border-radius: ${({ theme }) => theme.borderRadius.medium};
+  box-shadow: ${({ theme }) => theme.shadows.medium};
+  border: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 const ToggleContainer = styled.div`
@@ -96,7 +97,7 @@ const ModeToggle = ({ preferDarkMode, onToggle }) => {
   return (
     <ModeWrapper>
       <ToggleContainer>
-        <ToggleButton 
+        <ToggleButton
           $darkMode={preferDarkMode}
           onClick={() => onToggle(!preferDarkMode)}
           aria-pressed={preferDarkMode}
@@ -114,8 +115,8 @@ const ModeToggle = ({ preferDarkMode, onToggle }) => {
         </ToggleButton>
       </ToggleContainer>
       <ModeDescription>
-        {preferDarkMode 
-          ? 'Showing dark variants when available' 
+        {preferDarkMode
+          ? 'Showing dark variants when available'
           : 'Showing standard variants (select dark mode to see dark variants)'}
       </ModeDescription>
     </ModeWrapper>

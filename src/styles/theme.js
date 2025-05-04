@@ -6,17 +6,27 @@
 export const theme = {
   colors: {
     primary: '#005bea',
+    primaryLight: '#00c6fb',
     primaryDark: '#232526',
     background: '#181b22',
+    backgroundAlt: '#1c2028',
     card: '#23272f',
     cardAlt: '#232526',
-    border: '#23272f',
+    cardHover: '#2a2f38',
+    border: '#2e3440',
+    borderLight: '#353945',
+    surface: {
+      primary: '#23272f',
+      secondary: '#2c3038',
+      muted: '#353945',
+      hover: '#2a2f38'
+    },
     accent: '#00c6fb',
     accent2: '#005bea',
     text: {
       main: '#f3f6fa',
       secondary: '#b0b3b8',
-      heading: '#f3f6fa',
+      heading: '#ffffff',
       muted: '#8a8f98',
       link: '#00c6fb',
     },
@@ -75,6 +85,20 @@ export const theme = {
     laptop: '1024px',
     desktop: '1200px',
   },
+  animation: {
+    duration: {
+      fast: '0.2s',
+      default: '0.3s',
+      slow: '0.5s'
+    },
+    timing: {
+      default: 'cubic-bezier(.4,0,.2,1)',
+      linear: 'linear',
+      ease: 'ease',
+      easeIn: 'ease-in',
+      easeOut: 'ease-out'
+    }
+  }
 };
 
 // Helper for media queries

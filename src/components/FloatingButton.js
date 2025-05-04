@@ -33,24 +33,24 @@ const FloatingContainer = styled.div`
 `;
 
 const GenerateButton = styled.button`
-  background-color: #0747A6;
-  color: white;
+  background: linear-gradient(90deg, ${({ theme }) => theme.colors.primary} 0%, ${({ theme }) => theme.colors.accent} 100%);
+  color: ${({ theme }) => theme.colors.text.heading};
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  font-weight: 600;
-  border-radius: 8px;
-  padding: 0.9rem 1.8rem;
-  box-shadow: 0 4px 8px rgba(7, 71, 166, 0.2);
-  transition: all 0.3s ease;
+  gap: ${({ theme }) => theme.spacing.sm};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.semiBold};
+  border-radius: ${({ theme }) => theme.borderRadius.medium};
+  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
+  box-shadow: ${({ theme }) => theme.shadows.medium};
+  transition: ${({ theme }) => theme.transitions.default};
   border: none;
   cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
   
   &:hover:not(:disabled) {
-    background-color: #0052CC;
+    background: linear-gradient(90deg, ${({ theme }) => theme.colors.accent} 0%, ${({ theme }) => theme.colors.primary} 100%);
     transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(7, 71, 166, 0.3);
+    box-shadow: ${({ theme }) => theme.shadows.large};
   }
   
   &:active:not(:disabled) {
@@ -133,17 +133,17 @@ const TipIcon = styled.span`
   font-size: 1.1rem;
 `;
 
-const FloatingButton = ({ 
-  onClick, 
-  disabled, 
-  loading, 
-  selectedAircraft, 
+const FloatingButton = ({
+  onClick,
+  disabled,
+  loading,
+  selectedAircraft,
   selectedVariant,
-  progress 
+  progress
 }) => {
   return (
     <FloatingContainer>
-      <GenerateButton 
+      <GenerateButton
         onClick={onClick}
         disabled={disabled || loading}
       >
@@ -159,7 +159,7 @@ const FloatingButton = ({
           </>
         )}
       </GenerateButton>
-      
+
       {loading && (
         <ProgressContainer>
           <ProgressBar>
@@ -168,14 +168,14 @@ const FloatingButton = ({
           <ProgressText>{progress}%</ProgressText>
         </ProgressContainer>
       )}
-      
+
       {!selectedAircraft && (
         <Tip>
           <TipIcon>💡</TipIcon>
           Please select an aircraft to generate a PDF checklist
         </Tip>
       )}
-      
+
       {selectedAircraft && selectedVariant && !loading && (
         <InfoMessage>
           <InfoIcon>✓</InfoIcon>
