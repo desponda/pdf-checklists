@@ -12,7 +12,7 @@ const API_URL = process.env.NODE_ENV === 'production'
 
 export const fetchAircraftList = async () => {
   try {
-    const response = await axios.get(`${API_URL}/api/files`);
+    const response = await axios.get('/api/files');
     return response.data;
   } catch (error) {
     console.error('Error fetching aircraft list:', error);
@@ -23,7 +23,7 @@ export const fetchAircraftList = async () => {
 export const generatePDF = async (pages) => {
   try {
     const response = await axios.post(
-      `${API_URL}/api/generate-pdf`,
+      '/api/generate-pdf',
       { pages },
       {
         responseType: 'blob',

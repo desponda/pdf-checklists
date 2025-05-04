@@ -8,7 +8,11 @@ const path = require('path');
 
 // Helper to get cache file path for a category
 function getCacheFilePath(category) {
-    return path.join(__dirname, '../cache', `file_index_${category}.json`);
+    const cacheDir = path.join(__dirname, '../cache');
+    if (!fs.existsSync(cacheDir)) {
+        fs.mkdirSync(cacheDir, { recursive: true });
+    }
+    return path.join(cacheDir, `file_index_${category}.json`);
 }
 
 // Helper to check if cache file is valid (less than 24h old)

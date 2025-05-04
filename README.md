@@ -11,11 +11,19 @@ A modern web application that allows users to select aircraft checklists and con
 
 ## Tech Stack
 
-- **Frontend:** React.js with Styled Components
+- **Frontend:** React.js with Tailwind CSS and shadcn/ui
 - **Backend:** Node.js with Express
 - **PDF Generation:** pdf-lib
 - **API Calls:** Axios
-- **Styling:** Modular CSS + Styled Components
+- **Styling:** Tailwind CSS, shadcn/ui
+
+## Tailwind CSS & shadcn/ui
+
+This project uses [Tailwind CSS](https://tailwindcss.com/) for utility-first styling and [shadcn/ui](https://ui.shadcn.com/) for accessible, beautiful React components. All custom CSS and styled-components have been removed in favor of this modern stack.
+
+- To customize styles, edit `tailwind.config.js` and use Tailwind utility classes in your components.
+- To add new UI components, use shadcn/ui or Headless UI for best accessibility and design.
+- Dark mode is enabled via Tailwind's `dark` class strategy.
 
 ## Project Structure
 
