@@ -21,18 +21,35 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
+
+      - name: Cache frontend dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ./apps/frontend/node_modules
+          key: ${{ runner.os }}-npm-frontend-${{ hashFiles('./apps/frontend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-frontend-
+
+      - name: Cache backend dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ./apps/backend/node_modules
+          key: ${{ runner.os }}-npm-backend-${{ hashFiles('./apps/backend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-backend-
       
       - name: Install root dependencies
-        run: npm install
+        run: npm install --no-workspaces
       
       - name: Install frontend dependencies
         working-directory: ./apps/frontend
-        run: npm install
+        run: npm install --no-workspaces
       
       - name: Install backend dependencies
         working-directory: ./apps/backend
-        run: npm install
+        run: npm install --no-workspaces
       
       - name: Run frontend linting
         working-directory: ./apps/frontend
