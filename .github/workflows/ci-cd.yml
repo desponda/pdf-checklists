@@ -71,31 +71,3 @@ jobs:
           file: ./apps/backend/Dockerfile
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:latest
-
-  deploy:
-    needs: docker-build-push
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Install Helm
-        uses: azure/setup-helm@v3
-        with:
-          version: 'latest'
-      
-      - name: Configure kubectl
-        uses: azure/k8s-set-context@v3
-        with:
-          method: kubeconfig
-          kubeconfig: ${{ secrets.KUBE_CONFIG }}
-      
-      - name: Deploy to Kubernetes
-        run: |
-          helm upgrade --install pdf-checklists ./deploy/helm/pdf-checklists \
-            --namespace pdf-checklists \
-            --create-namespace \
-            --set frontend.image=${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:latest \
-            --set backend.image=${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:latest \
-            --wait 
