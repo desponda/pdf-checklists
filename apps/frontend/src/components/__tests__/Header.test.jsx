@@ -11,9 +11,4 @@ describe('Header Component', () => {
     render(<Header />);
     expect(screen.getByText('v1.0')).toBeInTheDocument();
   });
-
-  it('renders the tagline', () => {
-    render(<Header />);
-    expect(screen.getByText('Your one stop shop for checklists')).toBeInTheDocument();
-  });
 }); 

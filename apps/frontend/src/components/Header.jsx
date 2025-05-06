@@ -14,7 +14,7 @@ export function Tagline() {
   return (
     <div className="flex justify-center my-8">
       <span className="relative inline-block px-8 py-2 text-zinc-100 text-lg md:text-xl font-light tracking-wide rounded-2xl" style={{ fontFamily: 'Inter, Roboto, Montserrat, Arial, sans-serif' }}>
-        <span className="relative z-10">Your one stop shop for checklists</span>
+        <span className="relative z-10">Your one stop for checklists</span>
         <svg className="absolute inset-0 w-full h-full" viewBox="0 0 340 48" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
           <rect
             x="2" y="2" width="336" height="44" rx="22"
