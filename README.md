@@ -78,7 +78,7 @@ pdf-checklists/
 
 The application will be available at:
 - Frontend: http://localhost:3000
-- Backend API: http://localhost:3001
+- Backend API: http://localhost:5000
 
 ### Development with VS Code Remote Containers
 

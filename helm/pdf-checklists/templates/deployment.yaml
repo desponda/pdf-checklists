@@ -1,3 +1,6 @@
+{{/*
+Deployment template for pdf-checklists components
+*/}}
 {{- define "pdf-checklists.deployment" -}}
 apiVersion: apps/v1
 kind: Deployment
@@ -5,6 +8,8 @@ metadata:
   name: {{ .name }}
   labels:
     app: {{ .name }}
+    {{- toYaml .Values.global.labels | nindent 4 }}
+    app.kubernetes.io/component: {{ .name }}
 spec:
   replicas: {{ .replicas }}
   selector:
@@ -14,15 +19,11 @@ spec:
     metadata:
       labels:
         app: {{ .name }}
-      {{- with .global.podAnnotations }}
       annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- toYaml .Values.global.podAnnotations | nindent 8 }}
     spec:
-      {{- with .securityContext }}
       securityContext:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- toYaml .Values.global.securityContext | nindent 8 }}
       containers:
         - name: {{ .name }}
           image: "{{ .image }}:{{ .tag }}"
@@ -33,32 +34,16 @@ spec:
               protocol: TCP
           resources:
             {{- toYaml .resources | nindent 12 }}
-      {{- with .nodeSelector }}
       nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .affinity }}
+        {{- toYaml .Values.global.nodeSelector | nindent 8 }}
       affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .tolerations }}
+        {{- toYaml .Values.global.affinity | nindent 8 }}
       tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- toYaml .Values.global.tolerations | nindent 8 }}
 {{- end }}
 ---
-{{- include "pdf-checklists.deployment" (merge .Values.frontend (dict
-  "global" .Values.global
-  "nodeSelector" .Values.nodeSelector
-  "affinity" .Values.affinity
-  "tolerations" .Values.tolerations
-  "securityContext" .Values.securityContext
-)) | nindent 0 }}
+# Frontend Deployment
+{{- include "pdf-checklists.deployment" .Values.frontend | nindent 0 }}
 ---
-{{- include "pdf-checklists.deployment" (merge .Values.backend (dict
-  "global" .Values.global
-  "nodeSelector" .Values.nodeSelector
-  "affinity" .Values.affinity
-  "tolerations" .Values.tolerations
-  "securityContext" .Values.securityContext
-)) | nindent 0 }}
+# Backend Deployment
+{{- include "pdf-checklists.deployment" .Values.backend | nindent 0 }}

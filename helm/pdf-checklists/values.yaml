@@ -1,5 +1,47 @@
+# Global configurations
+global:
+  environment: production
+  # Common labels for all resources
+  labels:
+    app.kubernetes.io/name: pdf-checklists
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+  # Default security context for all pods
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    fsGroup: 2000
+  # Default pod annotations
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "metrics"
+  # Default resource constraints
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+  # Default scheduling rules
+  nodeSelector: {}
+  tolerations: []
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                    - pdf-checklists
+            topologyKey: kubernetes.io/hostname
+
+# Application configurations
 frontend:
-  name: frontend
+  name: pdf-checklists-frontend
   image: ghcr.io/desponda/pdf-checklists-frontend
   tag: latest
   replicas: 2
@@ -13,19 +55,9 @@ frontend:
   service:
     type: ClusterIP
     port: 80
-  ingress:
-    enabled: true
-    className: nginx
-    annotations:
-      cert-manager.io/cluster-issuer: letsencrypt-prod
-    hosts:
-      - host: checklists.example.com
-        paths:
-          - path: /
-            pathType: Prefix
 
 backend:
-  name: backend
+  name: pdf-checklists-backend
   image: ghcr.io/desponda/pdf-checklists-backend
   tag: latest
   replicas: 2
@@ -38,39 +70,14 @@ backend:
       memory: 512Mi
   service:
     type: ClusterIP
-    port: 3000
+    port: 5000
 
+# Ingress configuration
 ingress:
-  enabled: false       
-
-
-
-global:
-  environment: production
-  podAnnotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "metrics"
-
-securityContext:
-  runAsNonRoot: true
-  runAsUser: 1000
-  fsGroup: 2000
-
-podSecurityContext:
-  runAsNonRoot: true
-  runAsUser: 1000
-
-nodeSelector: {}
-tolerations: []
-affinity:
-  podAntiAffinity:
-    preferredDuringSchedulingIgnoredDuringExecution:
-    - weight: 100
-      podAffinityTerm:
-        labelSelector:
-          matchExpressions:
-          - key: app
-            operator: In
-            values:
-            - pdf-checklists
-        topologyKey: kubernetes.io/hostname 
+  enabled: false
+  className: nginx
+  annotations: {}
+  host: chart-example.local
+  path: /
+  pathType: Prefix
+  tls: false
