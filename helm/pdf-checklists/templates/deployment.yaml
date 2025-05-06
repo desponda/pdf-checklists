@@ -5,45 +5,45 @@ Deployment template for pdf-checklists components
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .name }}
+  name: {{ .component.name }}
   labels:
-    app: {{ .name }}
-    {{- toYaml .Values.global.labels | nindent 4 }}
-    app.kubernetes.io/component: {{ .name }}
+    app: {{ .component.name }}
+    {{- toYaml .root.Values.global.labels | nindent 4 }}
+    app.kubernetes.io/component: {{ .component.name }}
 spec:
-  replicas: {{ .replicas }}
+  replicas: {{ .component.replicas }}
   selector:
     matchLabels:
-      app: {{ .name }}
+      app: {{ .component.name }}
   template:
     metadata:
       labels:
-        app: {{ .name }}
+        app: {{ .component.name }}
       annotations:
-        {{- toYaml .Values.global.podAnnotations | nindent 8 }}
+        {{- toYaml .root.Values.global.podAnnotations | nindent 8 }}
     spec:
       securityContext:
-        {{- toYaml .Values.global.securityContext | nindent 8 }}
+        {{- toYaml .root.Values.global.securityContext | nindent 8 }}
       containers:
-        - name: {{ .name }}
-          image: "{{ .image }}:{{ .tag }}"
+        - name: {{ .component.name }}
+          image: "{{ .component.image }}:{{ .component.tag }}"
           imagePullPolicy: Always
           ports:
             - name: http
-              containerPort: {{ .service.port }}
+              containerPort: {{ .component.service.port }}
               protocol: TCP
           resources:
-            {{- toYaml .resources | nindent 12 }}
+            {{- toYaml .component.resources | nindent 12 }}
       nodeSelector:
-        {{- toYaml .Values.global.nodeSelector | nindent 8 }}
+        {{- toYaml .root.Values.global.nodeSelector | nindent 8 }}
       affinity:
-        {{- toYaml .Values.global.affinity | nindent 8 }}
+        {{- toYaml .root.Values.global.affinity | nindent 8 }}
       tolerations:
-        {{- toYaml .Values.global.tolerations | nindent 8 }}
+        {{- toYaml .root.Values.global.tolerations | nindent 8 }}
 {{- end }}
 ---
 # Frontend Deployment
-{{- include "pdf-checklists.deployment" .Values.frontend | nindent 0 }}
+{{- include "pdf-checklists.deployment" (dict "root" . "component" .Values.frontend) | nindent 0 }}
 ---
 # Backend Deployment
-{{- include "pdf-checklists.deployment" .Values.backend | nindent 0 }}
+{{- include "pdf-checklists.deployment" (dict "root" . "component" .Values.backend) | nindent 0 }}
