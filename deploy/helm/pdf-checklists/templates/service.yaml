@@ -10,9 +10,9 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  type: {{ default "ClusterIP" .service.type }}
+  type: {{ .service.type | default "ClusterIP" }}
   ports:
-    - port: {{ default 80 .service.port }}
+    - port: {{ .service.port | default 80 }}
       targetPort: http
       protocol: TCP
       name: http
