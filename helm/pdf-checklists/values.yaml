@@ -1,11 +1,7 @@
 # Global configurations
 global:
   environment: production
-  # Common labels for all resources
-  labels:
-    app.kubernetes.io/name: pdf-checklists
-    app.kubernetes.io/instance: "{{ .Release.Name }}"
-    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+  # Common labels will be managed by helper template
   # Default security context for all pods
   securityContext:
     runAsNonRoot: true

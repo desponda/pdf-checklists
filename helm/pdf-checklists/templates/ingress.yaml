@@ -8,7 +8,7 @@ metadata:
   name: {{ printf "%s-ingress" .Values.frontend.name }}
   labels:
     app: {{ .Values.frontend.name }}
-    {{- toYaml .Values.global.labels | nindent 4 }}
+    {{- include "pdf-checklists.labels" . | nindent 4 }}
     app.kubernetes.io/component: frontend-ingress
   {{- with .Values.ingress.annotations }}
   annotations:
