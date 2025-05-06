@@ -37,8 +37,19 @@ spec:
             - name: BACKEND_URL
               value: "http://{{ $.root.Values.backend.name }}:{{ $.root.Values.backend.service.port }}"
           {{- end }}
+          {{- if eq .component.name $.root.Values.backend.name }}
+          volumeMounts:
+            - name: cache-volume
+              mountPath: /app/server/cache
+          {{- end }}
           resources:
             {{- toYaml .component.resources | nindent 12 }}
+      {{- if eq .component.name $.root.Values.backend.name }}
+      volumes:
+        - name: cache-volume
+          emptyDir:
+            sizeLimit: 500Mi
+      {{- end }}
       nodeSelector:
         {{- toYaml .root.Values.global.nodeSelector | nindent 8 }}
       affinity:
