@@ -33,14 +33,6 @@ spec:
               protocol: TCP
           resources:
             {{- toYaml .resources | nindent 12 }}
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: http
       {{- with .nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
