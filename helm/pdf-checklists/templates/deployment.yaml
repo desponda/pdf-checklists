@@ -30,7 +30,7 @@ spec:
           imagePullPolicy: Always
           ports:
             - name: http
-              containerPort: {{ .component.service.port }}
+              containerPort: {{ .component.containerPort | default .component.service.port }}
               protocol: TCP
           {{- if eq .component.name $.root.Values.frontend.name }}
           env:

@@ -12,19 +12,14 @@ COPY . .
 RUN npm run build
 
 # Production stage
-FROM nginx:alpine
+FROM nginxinc/nginx-unprivileged:alpine
 
-# Install envsubst
-RUN apk add --no-cache gettext
+# Set default backend URL for local development
+ENV BACKEND_URL=http://localhost:5000
 
 # Copy built files and nginx config
 COPY --from=builder /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/templates/default.conf.template
 
-# Set default backend URL for local development
-ENV BACKEND_URL=http://localhost:5000
-
-EXPOSE 80
-
-# Use shell form to expand environment variables
-CMD ["/bin/sh", "-c", "envsubst '${BACKEND_URL}' < /etc/nginx/templates/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"] 
+# Container will wait for environment variables to be substituted into the nginx config
+CMD ["/bin/sh", "-c", "envsubst '$BACKEND_URL' < /etc/nginx/templates/default.conf.template > /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'"]

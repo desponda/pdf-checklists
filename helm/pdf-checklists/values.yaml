@@ -41,6 +41,8 @@ frontend:
   image: ghcr.io/desponda/pdf-checklists-frontend
   tag: latest
   replicas: 2
+  # Container configuration
+  containerPort: 8080 # nginx-unprivileged uses port 8080
   resources:
     requests:
       cpu: 100m
@@ -50,7 +52,8 @@ frontend:
       memory: 256Mi
   service:
     type: ClusterIP
-    port: 80
+    port: 80 # Service still exposes port 80 externally
+    targetPort: 8080 # But forwards to container port 8080
 
 backend:
   name: pdf-checklists-backend
