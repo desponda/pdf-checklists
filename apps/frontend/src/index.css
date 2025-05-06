@@ -75,9 +75,14 @@
   html, body {
     font-family: Inter, Roboto, Montserrat, Arial, sans-serif;
     font-weight: 300;
-    background-color: #09090b !important;
     min-height: 100vh !important;
     height: 100% !important;
+    background-color: #09090b !important;
+    background-image: 
+      radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      radial-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 50px 50px, 25px 25px;
+    background-position: 0 0, 25px 25px;
   }
 
   * {

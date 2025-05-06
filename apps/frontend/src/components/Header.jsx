@@ -14,7 +14,7 @@ export function Tagline() {
   return (
     <div className="flex justify-center my-8">
       <span className="relative inline-block px-8 py-2 text-zinc-100 text-lg md:text-xl font-light tracking-wide rounded-2xl" style={{ fontFamily: 'Inter, Roboto, Montserrat, Arial, sans-serif' }}>
-        <span className="relative z-10">Your one stop for checklists</span>
+        <span className="relative z-10">Your one stop for <span className="text-blue-400">checklists</span></span>
         <svg className="absolute inset-0 w-full h-full" viewBox="0 0 340 48" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
           <rect
             x="2" y="2" width="336" height="44" rx="22"
@@ -34,11 +34,11 @@ export function Tagline() {
           />
           <defs>
             <linearGradient id="shiny" x1="0" y1="0" x2="340" y2="0" gradientUnits="userSpaceOnUse">
-              <stop stopColor="#fff" stopOpacity="0" />
-              <stop offset="0.2" stopColor="#fff" stopOpacity="0.7" />
-              <stop offset="0.5" stopColor="#fff" stopOpacity="1" />
-              <stop offset="0.8" stopColor="#fff" stopOpacity="0.7" />
-              <stop offset="1" stopColor="#fff" stopOpacity="0" />
+              <stop stopColor="#3b82f6" stopOpacity="0" />
+              <stop offset="0.2" stopColor="#3b82f6" stopOpacity="0.7" />
+              <stop offset="0.5" stopColor="#3b82f6" stopOpacity="1" />
+              <stop offset="0.8" stopColor="#3b82f6" stopOpacity="0.7" />
+              <stop offset="1" stopColor="#3b82f6" stopOpacity="0" />
             </linearGradient>
           </defs>
         </svg>
@@ -62,9 +62,11 @@ export default function Header() {
         <div className="backdrop-blur-md bg-zinc-900/95 border border-blue-900/40 shadow-3xl rounded-2xl w-full max-w-5xl mx-auto px-2 py-5 flex flex-col gap-1">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <JetIcon className="text-blue-400" />
-              <span className="text-xl md:text-2xl font-bold text-white tracking-wide">Flight Simulation Checklists</span>
-              <span className="text-xs bg-zinc-800 text-zinc-300 px-2 py-1 rounded ml-2">v1.0</span>
+              <div className="bg-blue-900/30 p-2 rounded-full">
+                <JetIcon className="text-blue-400" />
+              </div>
+              <span className="text-xl md:text-2xl font-bold text-white tracking-wide">Flight <span className="text-blue-400">Simulation</span> Checklists</span>
+              <span className="text-xs bg-blue-900/30 text-blue-300 px-2 py-1 rounded ml-2">v1.0</span>
             </div>
           </div>
         </div>

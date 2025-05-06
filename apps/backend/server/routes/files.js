@@ -33,7 +33,7 @@ function isCacheValid(filePath) {
  * @param {String} baseUrl - Base URL for this category
  * @param {Object} aircraftData - Combined aircraft data object
  */
-function processFiles(fileList, baseUrl, aircraftData) {
+function processFiles(fileList, baseUrl, aircraftData, categoryName) {
     fileList.forEach(filename => {
         // Parse out aircraft info from filename
         // Format is typically Aircraft_Name---001.jpg or Aircraft_Name_Dark---001.jpg
@@ -56,7 +56,8 @@ function processFiles(fileList, baseUrl, aircraftData) {
             // Initialize aircraft entry if needed
             if (!aircraftData[aircraftName]) {
                 aircraftData[aircraftName] = {
-                    variants: {}
+                    variants: {},
+                    category: categoryName  // Add category information
                 };
             }
 
@@ -177,7 +178,7 @@ router.get('/', async (req, res) => {
                 }
             }
             // Process files for this category
-            processFiles(fileList, category.baseUrl, aircraftData);
+            processFiles(fileList, category.baseUrl, aircraftData, category.name);
         }
 
         res.json(aircraftData);

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { fetchAircraftList, generatePDF } from './services/api';
 import AircraftSelector from './components/AircraftSelector';
 import Header from './components/Header';
-import { Tagline } from './components/Header';
 import Footer from './components/Footer';
 import ModeToggle from './components/ModeToggle';
 import Welcome from './components/Welcome';
@@ -127,7 +126,6 @@ function App() {
       <Header />
       <main className="main-content max-w-5xl mx-auto px-2 pb-16">
         <Welcome />
-        <Tagline />
         {error && (
           <div className="w-full max-w-2xl mx-auto my-4">
             <div className="bg-red-900 text-red-200 rounded-lg px-4 py-3 shadow border border-red-800">
