@@ -1,12 +1,24 @@
-.PHONY: dev-up dev-down build deploy clean test lint install
+.PHONY: dev-up dev-down dev-frontend dev-backend build deploy clean test lint install
 
 # Development
 dev-up:
-	npm run dev --workspace=@pdf-checklists/backend & \
-	npm run dev --workspace=@pdf-checklists/frontend
+	cd apps/backend && npm run dev & \
+	cd apps/frontend && npm run dev
+
+dev-frontend:
+	cd apps/frontend && npm run dev
+
+dev-backend:
+	cd apps/backend && npm run dev
 
 dev-down:
-	pkill -f "npm run dev"
+	-pkill -f "node.*apps/frontend"
+	-pkill -f "node.*apps/backend" 
+	-pkill -f "npm run dev"
+	-pkill -f "node server.js"
+	-pkill -f "nodemon"
+	-pkill -f "vite"
+	@echo "Shutting down all development services..."
 
 # Testing and Linting
 test:
@@ -44,4 +56,4 @@ port-forward:
 install:
 	npm install
 	npm install --workspace=@pdf-checklists/frontend
-	npm install --workspace=@pdf-checklists/backend 
+	npm install --workspace=@pdf-checklists/backend
