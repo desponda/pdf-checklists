@@ -32,6 +32,11 @@ spec:
             - name: http
               containerPort: {{ .component.service.port }}
               protocol: TCP
+          {{- if eq .component.name $.root.Values.frontend.name }}
+          env:
+            - name: BACKEND_URL
+              value: "http://{{ $.root.Values.backend.name }}:{{ $.root.Values.backend.service.port }}"
+          {{- end }}
           resources:
             {{- toYaml .component.resources | nindent 12 }}
       nodeSelector:
