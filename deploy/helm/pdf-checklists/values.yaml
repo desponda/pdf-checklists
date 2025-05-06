@@ -1,6 +1,6 @@
 frontend:
   name: frontend
-  image: ghcr.io/pdf-checklists-frontend
+  image: ghcr.io/desponda/pdf-checklists-frontend
   tag: latest
   replicas: 2
   resources:
@@ -26,7 +26,7 @@ frontend:
 
 backend:
   name: backend
-  image: ghcr.io/pdf-checklists-backend
+  image: ghcr.io/desponda/pdf-checklists-backend
   tag: latest
   replicas: 2
   resources:
