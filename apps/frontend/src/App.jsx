@@ -134,7 +134,7 @@ function App() {
           </div>
         )}
         <section className="section mt-8">
-          <h2 className="section-title text-xl font-semibold text-zinc-200 mb-4">Aircraft Checklist Selection</h2>
+          <h2 className="section-title text-xl font-semibold text-zinc-200 mb-4">Select a Checklist To Download</h2>
           {loading ? (
             <div className="flex flex-col items-center justify-center py-12">
               <div className="w-12 h-12 border-4 border-zinc-700 border-t-blue-500 rounded-full animate-spin mb-4" />

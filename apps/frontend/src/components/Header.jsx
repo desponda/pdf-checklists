@@ -1,21 +1,19 @@
 import React from "react";
 
-function JetIcon({ className }) {
-  // Simple, modern jet SVG icon
-  return (
-    <svg className={className} width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M2 16l20-5-20-5v4l16 1-16 1z" />
-      <line x1="22" y1="11" x2="22" y2="13" />
-    </svg>
-  );
-}
 
 export function Tagline() {
   return (
     <div className="flex justify-center my-8">
       <span className="relative inline-block px-8 py-2 text-zinc-100 text-lg md:text-xl font-light tracking-wide rounded-2xl" style={{ fontFamily: 'Inter, Roboto, Montserrat, Arial, sans-serif' }}>
         <span className="relative z-10">Your one stop for <span className="text-blue-400">checklists</span></span>
-        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 340 48" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <svg
+          data-testid="tagline-animated-svg"
+          className="absolute inset-0 w-full h-full"
+          viewBox="0 0 340 48"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          preserveAspectRatio="none"
+        >
           <rect
             x="2" y="2" width="336" height="44" rx="22"
             stroke="#fff" strokeWidth="1.5"
@@ -59,11 +57,25 @@ export default function Header() {
   return (
     <>
       <header className="w-full flex justify-center mt-6 mb-4">
-        <div className="backdrop-blur-md bg-zinc-900/95 border border-blue-900/40 shadow-3xl rounded-2xl w-full max-w-5xl mx-auto px-2 py-5 flex flex-col gap-1">
+        <div data-testid="header-main-container" className="backdrop-blur-md bg-zinc-900/95 border border-blue-900/40 shadow-3xl rounded-2xl w-full max-w-5xl mx-auto px-2 py-5 flex flex-col gap-1">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="bg-blue-900/30 p-2 rounded-full">
-                <JetIcon className="text-blue-400" />
+                <svg
+                  data-testid="jet-icon-svg"
+                  className="text-blue-400"
+                  fill="none"
+                  height="28"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  width="28"
+                >
+                  <path d="M2 16l20-5-20-5v4l16 1-16 1z" />
+                  <line x1="22" y1="11" x2="22" y2="13" />
+                </svg>
               </div>
               <span className="text-xl md:text-2xl font-bold text-white tracking-wide">Flight <span className="text-blue-400">Simulation</span> Checklists</span>
               <span className="text-xs bg-blue-900/30 text-blue-300 px-2 py-1 rounded ml-2">v1.0</span>

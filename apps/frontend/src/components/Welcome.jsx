@@ -1,5 +1,4 @@
 import React from "react";
-import { Tagline } from "./Header";
 
 function Welcome() {
   return (
