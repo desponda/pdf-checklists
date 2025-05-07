@@ -34,12 +34,11 @@ global:
                   values:
                     - pdf-checklists
             topologyKey: kubernetes.io/hostname
-
 # Application configurations
 frontend:
   name: pdf-checklists-frontend
   image: ghcr.io/desponda/pdf-checklists-frontend
-  tag: latest
+  tag: ce9d6a7
   replicas: 2
   # Container configuration
   containerPort: 8080 # nginx-unprivileged uses port 8080
@@ -54,7 +53,6 @@ frontend:
     type: ClusterIP
     port: 80 # Service still exposes port 80 externally
     targetPort: 8080 # But forwards to container port 8080
-
 backend:
   name: pdf-checklists-backend
   image: ghcr.io/desponda/pdf-checklists-backend
@@ -70,7 +68,6 @@ backend:
   service:
     type: ClusterIP
     port: 5000
-
 # Ingress configuration
 ingress:
   enabled: false
