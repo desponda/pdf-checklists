@@ -56,7 +56,7 @@ frontend:
 backend:
   name: pdf-checklists-backend
   image: ghcr.io/desponda/pdf-checklists-backend
-  tag: latest
+  tag: e1ef756
   replicas: 2
   resources:
     requests:
