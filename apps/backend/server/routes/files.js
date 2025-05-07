@@ -1,191 +1,137 @@
-const express = require('express');
-const fetch = require('node-fetch');
+
+"use strict";
+const express = require("express");
+const fetch = require("node-fetch");
+const fs = require("fs");
+const path = require("path");
+
 const router = express.Router();
 
 
-const fs = require('fs');
-const path = require('path');
 
-// Helper to get cache file path for a category
+const { ensureDir, PDF_CACHE_DIR } = require("../utils/cache");
+
+const CATEGORIES = [
+  { name: "airliner", url: "https://msfschecklist.de/ebag_airliner/file_index.js", baseUrl: "https://msfschecklist.de/ebag_airliner/" },
+  { name: "general_aviation", url: "https://msfschecklist.de/ebag_general_aviation/file_index.js", baseUrl: "https://msfschecklist.de/ebag_general_aviation/" },
+  { name: "helicopter", url: "https://msfschecklist.de/ebag_helicopter/file_index.js", baseUrl: "https://msfschecklist.de/ebag_helicopter/" },
+  { name: "military", url: "https://msfschecklist.de/ebag_military/file_index.js", baseUrl: "https://msfschecklist.de/ebag_military/" },
+  { name: "wip", url: "https://msfschecklist.de/ebag_wip/file_index.js", baseUrl: "https://msfschecklist.de/ebag_wip/" },
+];
+
+
+
 function getCacheFilePath(category) {
-    const cacheDir = path.join(__dirname, '../cache');
-    if (!fs.existsSync(cacheDir)) {
-        fs.mkdirSync(cacheDir, { recursive: true });
-    }
-    return path.join(cacheDir, `file_index_${category}.json`);
+  // Use the same cache dir as before, or define a new one for file indexes if needed
+  const dir = PDF_CACHE_DIR.replace(/pdfs$/, ""); // fallback to ../cache
+  ensureDir(dir);
+  return path.join(dir, `file_index_${category}.json`);
 }
 
-// Helper to check if cache file is valid (less than 24h old)
+// Local cache validity check for file index cache (not PDF cache)
+const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
 function isCacheValid(filePath) {
-    try {
-        const stats = fs.statSync(filePath);
-        const now = Date.now();
-        const mtime = new Date(stats.mtime).getTime();
-        return (now - mtime) < 24 * 60 * 60 * 1000; // 24 hours
-    } catch {
-        return false;
-    }
+  try {
+    const stats = fs.statSync(filePath);
+    return Date.now() - new Date(stats.mtime).getTime() < CACHE_TTL;
+  } catch {
+    return false;
+  }
 }
 
-/**
- * Process files from a category and add them to the aircraft data
- * @param {Array} fileList - Array of filenames
- * @param {String} baseUrl - Base URL for this category
- * @param {Object} aircraftData - Combined aircraft data object
- */
-function processFiles(fileList, baseUrl, aircraftData, categoryName) {
-    fileList.forEach(filename => {
-        // Parse out aircraft info from filename
-        // Format is typically Aircraft_Name---001.jpg or Aircraft_Name_Dark---001.jpg
-        const filenameParts = filename.split('---');
+function parseFileList(fileData) {
+  const match = fileData.match(/var\s+files\s*=\s*`\s*([\s\S]+?)`\s*;/);
+  if (!match || !match[1]) return [];
+  return match[1].trim().split("\n").filter(f => f.trim() && f !== "file_index.js");
+}
 
-        if (filenameParts.length === 2) {
-            let aircraftName = filenameParts[0];
-            const pageNumber = parseInt(filenameParts[1].replace(/\.jpg$/, ''));
+function addFileToAircraftData(filename, baseUrl, aircraftData, categoryName) {
+  // Parse filename: "AircraftName[_Dark]---001.jpg"
+  const [aircraftRaw, pageRaw] = filename.split("---");
+  if (!aircraftRaw || !pageRaw) return;
 
-            // Determine if this is a dark variant
-            const isDark = aircraftName.toLowerCase().includes('dark');
-            let variant = 'standard';
+  // Determine aircraft name and variant
+  let aircraftName = aircraftRaw;
+  const isDark = /_Dark$/i.test(aircraftName);
+  const variant = isDark ? "dark" : "standard";
+  if (isDark) aircraftName = aircraftName.replace(/_Dark$/i, "");
 
-            if (isDark) {
-                // Remove _Dark from aircraft name and set variant
-                aircraftName = aircraftName.replace(/_Dark$/i, '');
-                variant = 'dark';
-            }
+  // Parse page number
+  const pageNumber = parseInt(pageRaw.replace(/\.jpg$/, ""), 10);
+  if (isNaN(pageNumber)) return;
 
-            // Initialize aircraft entry if needed
-            if (!aircraftData[aircraftName]) {
-                aircraftData[aircraftName] = {
-                    variants: {},
-                    category: categoryName  // Add category information
-                };
-            }
+  // Initialize aircraft entry if needed
+  if (!aircraftData[aircraftName]) {
+    aircraftData[aircraftName] = {
+      variants: {},
+      category: categoryName,
+    };
+  }
 
-            // Add to standard list or dark variant
-            if (variant === 'standard') {
-                if (!aircraftData[aircraftName].standard) {
-                    aircraftData[aircraftName].standard = {
-                        name: aircraftName.replace(/_/g, ' '),
-                        pages: []
-                    };
-                }
-
-                aircraftData[aircraftName].standard.pages.push({
-                    page: pageNumber,
-                    filename: filename,
-                    url: baseUrl + filename
-                });
-
-                // Sort pages by page number
-                aircraftData[aircraftName].standard.pages.sort((a, b) => a.page - b.page);
-            } else {
-                if (!aircraftData[aircraftName].variants[variant]) {
-                    aircraftData[aircraftName].variants[variant] = {
-                        name: `${aircraftName.replace(/_/g, ' ')} (Dark)`,
-                        pages: []
-                    };
-                }
-
-                aircraftData[aircraftName].variants[variant].pages.push({
-                    page: pageNumber,
-                    filename: filename,
-                    url: baseUrl + filename
-                });
-
-                // Sort pages by page number
-                aircraftData[aircraftName].variants[variant].pages.sort((a, b) => a.page - b.page);
-            }
-        }
+  // Helper to add a page to a variant
+  function addPage(target, name) {
+    if (!target[name]) {
+      target[name] = {
+        name: name === "standard" ? aircraftName.replace(/_/g, " ") : `${aircraftName.replace(/_/g, " ")} (Dark)`,
+        pages: [],
+      };
+    }
+    target[name].pages.push({
+      page: pageNumber,
+      filename,
+      url: baseUrl + filename,
     });
+    target[name].pages.sort((a, b) => a.page - b.page);
+  }
+
+  if (variant === "standard") {
+    addPage(aircraftData[aircraftName], "standard");
+  } else {
+    addPage(aircraftData[aircraftName].variants, "dark");
+  }
 }
 
-/**
- * API endpoint to fetch the file index from all categories
- */
-router.get('/', async (req, res) => {
+async function getFileListForCategory(category, headers) {
+  const cacheFile = getCacheFilePath(category.name);
+  if (isCacheValid(cacheFile)) {
     try {
-        const categories = [
-            {
-                name: 'airliner',
-                url: 'https://msfschecklist.de/ebag_airliner/file_index.js',
-                baseUrl: 'https://msfschecklist.de/ebag_airliner/'
-            },
-            {
-                name: 'general_aviation',
-                url: 'https://msfschecklist.de/ebag_general_aviation/file_index.js',
-                baseUrl: 'https://msfschecklist.de/ebag_general_aviation/'
-            },
-            {
-                name: 'helicopter',
-                url: 'https://msfschecklist.de/ebag_helicopter/file_index.js',
-                baseUrl: 'https://msfschecklist.de/ebag_helicopter/'
-            },
-            {
-                name: 'military',
-                url: 'https://msfschecklist.de/ebag_military/file_index.js',
-                baseUrl: 'https://msfschecklist.de/ebag_military/'
-            },
-            {
-                name: 'wip',
-                url: 'https://msfschecklist.de/ebag_wip/file_index.js',
-                baseUrl: 'https://msfschecklist.de/ebag_wip/'
-            }
-        ];
-
-        const aircraftData = {};
-        const headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36',
-            'Accept': 'text/javascript,application/javascript,*/*;q=0.8',
-            'Accept-Language': 'en-US,en;q=0.9',
-            'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache'
-        };
-
-        // For each category, use cache if valid, else fetch and update cache
-        for (const category of categories) {
-            const cacheFile = getCacheFilePath(category.name);
-            let fileList = null;
-            if (isCacheValid(cacheFile)) {
-                // Read from cache
-                try {
-                    const cached = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
-                    fileList = cached.fileList;
-                    console.log(`Loaded ${category.name} file index from cache (${fileList.length} files)`);
-                } catch (e) {
-                    console.warn(`Failed to read cache for ${category.name}, will refetch.`);
-                }
-            }
-            if (!fileList) {
-                // Fetch from remote
-                try {
-                    console.log(`Fetching ${category.name} file index from ${category.url}`);
-                    const response = await fetch(category.url, { headers });
-                    const fileData = await response.text();
-                    const fileListPattern = /var\s+files\s*=\s*`\s*([\s\S]+?)`\s*;/;
-                    const fileListMatch = fileData.match(fileListPattern);
-                    if (fileListMatch && fileListMatch[1]) {
-                        fileList = fileListMatch[1].trim().split('\n').filter(file => file.trim() !== '' && file !== 'file_index.js');
-                        // Write to cache
-                        fs.writeFileSync(cacheFile, JSON.stringify({ fileList, fetched: Date.now() }, null, 2));
-                        console.log(`Fetched and cached ${fileList.length} files for ${category.name}`);
-                    } else {
-                        console.error(`Could not find file list in ${category.name} source page`);
-                        fileList = [];
-                    }
-                } catch (err) {
-                    console.error(`Error fetching ${category.name} file index:`, err);
-                    fileList = [];
-                }
-            }
-            // Process files for this category
-            processFiles(fileList, category.baseUrl, aircraftData, category.name);
-        }
-
-        res.json(aircraftData);
-    } catch (error) {
-        console.error('Error fetching file indexes:', error);
-        res.status(500).json({ error: 'Failed to fetch file indexes', details: error.message });
+      const cached = JSON.parse(fs.readFileSync(cacheFile, "utf8"));
+      if (Array.isArray(cached.fileList)) return cached.fileList;
+    } catch (e) {
+      // ignore cache read error, will fetch
     }
+  }
+  try {
+    const response = await fetch(category.url, { headers });
+    const fileData = await response.text();
+    const fileList = parseFileList(fileData);
+    fs.writeFileSync(cacheFile, JSON.stringify({ fileList, fetched: Date.now() }, null, 2));
+    return fileList;
+  } catch {
+    return [];
+  }
+}
+
+
+// Main route handler: returns all aircraft data, using cache for each category
+router.get("/", async (req, res) => {
+  const headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36",
+    Accept: "text/javascript,application/javascript,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Cache-Control": "no-cache",
+    Pragma: "no-cache",
+  };
+  const aircraftData = {};
+  try {
+    for (const category of CATEGORIES) {
+      const fileList = await getFileListForCategory(category, headers);
+      fileList.forEach(filename => addFileToAircraftData(filename, category.baseUrl, aircraftData, category.name));
+    }
+    res.json(aircraftData);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch file indexes", details: error.message });
+  }
 });
 
 module.exports = router;
