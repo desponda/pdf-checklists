@@ -38,7 +38,7 @@ global:
 frontend:
   name: pdf-checklists-frontend
   image: ghcr.io/desponda/pdf-checklists-frontend
-  tag: ce9d6a7
+  tag: 0ad463b
   replicas: 2
   # Container configuration
   containerPort: 8080 # nginx-unprivileged uses port 8080
