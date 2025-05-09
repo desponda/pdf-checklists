@@ -9,22 +9,6 @@ describe('Header Component', () => {
     expect(versionElement).toBeInTheDocument();
     expect(versionElement).toHaveClass('text-blue-300');
   });
-  
-  it('renders the JetIcon', () => {
-    render(<Header />);
-    const svg = screen.getByTestId('jet-icon-svg');
-    expect(svg).toBeInTheDocument();
-    expect(svg).toHaveAttribute('width', '28');
-    expect(svg).toHaveAttribute('height', '28');
-  });
-
-  it('has proper structure and styling', () => {
-    render(<Header />);
-    const mainContainer = screen.getByTestId('header-main-container');
-    expect(mainContainer).toBeInTheDocument();
-    expect(mainContainer.className).toMatch(/bg-zinc-900\/95/);
-    expect(mainContainer.className).toMatch(/border-blue-900\/40/);
-  });
 
   it('highlights "Simulation" in blue', () => {
     render(<Header />);

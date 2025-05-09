@@ -105,11 +105,9 @@ describe('AircraftSelector Component', () => {
         generatingPDF={false}
       />
     );
-    
-    // Select Airliners category
-    const categorySelect = screen.getByLabelText('Filter by aircraft category');
-    fireEvent.change(categorySelect, { target: { value: 'Airliners' } });
-    
+    // Click the Airliners filter chip
+    const airlinersChip = screen.getByRole('button', { name: 'Airliners' });
+    fireEvent.click(airlinersChip);
     // Only Boeing 737 should be visible
     expect(screen.getByText('Boeing 737')).toBeInTheDocument();
     expect(screen.queryByText('Cessna 172')).not.toBeInTheDocument();
@@ -127,7 +125,6 @@ describe('AircraftSelector Component', () => {
         generatingPDF={false}
       />
     );
-    
     // Target the specific element by its class
     const countElements = screen.getAllByText((content, node) => {
       return node.classList && 
@@ -136,12 +133,10 @@ describe('AircraftSelector Component', () => {
              node.textContent.includes('4') && 
              node.textContent.includes('aircraft');
     });
-    
     expect(countElements.length).toBeGreaterThan(0);
-
-    const categorySelect = screen.getByLabelText('Filter by aircraft category');
-    fireEvent.change(categorySelect, { target: { value: 'Military' } });
-
+    // Click the Military filter chip
+    const militaryChip = screen.getByRole('button', { name: 'Military' });
+    fireEvent.click(militaryChip);
     // Check for the updated count
     const updatedCountElements = screen.getAllByText((content, node) => {
       return node.classList && 
@@ -150,7 +145,6 @@ describe('AircraftSelector Component', () => {
              node.textContent.includes('1') && 
              node.textContent.includes('aircraft');
     });
-    
     expect(updatedCountElements.length).toBeGreaterThan(0);
   });
   
@@ -185,11 +179,10 @@ describe('AircraftSelector Component', () => {
         generatingPDF={false}
       />
     );
-    
     // Find the card for Boeing 737 and check for selection styling
     const b737Button = screen.getByRole('button', { name: /Boeing 737/i });
     expect(b737Button).toHaveAttribute('aria-pressed', 'true');
-    expect(b737Button.className).toMatch(/border-blue-500/);
+    expect(b737Button.className).toMatch(/border-violet-400\/60/);
   });
   
   it('disables interaction when generating PDF', () => {
@@ -259,12 +252,10 @@ describe('AircraftSelector Component', () => {
         generatingPDF={false}
       />
     );
-    
-    // Search for something that doesn't exist
+    // Search for a non-existent aircraft
     const searchInput = screen.getByPlaceholderText('Search aircraft...');
     fireEvent.change(searchInput, { target: { value: 'does not exist' } });
-    
     // Should show no results message
-    expect(screen.getByText('No aircraft found matching your search criteria.')).toBeInTheDocument();
+    expect(screen.getByText('No aircraft found matching your search.')).toBeInTheDocument();
   });
 });
