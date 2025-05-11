@@ -24,6 +24,44 @@ function Hero() {
   );
 }
 
+// We've moved the geometric lines to CSS
+
+// Add Doppler-like triangle pattern lines
+function CurvedLines() {
+  return (
+    <div className="fixed inset-0 overflow-hidden pointer-events-none" style={{ zIndex: 0 }}>
+      <svg 
+        width="100%" 
+        height="100%" 
+        xmlns="http://www.w3.org/2000/svg" 
+        style={{ position: 'absolute', top: 0, left: 0 }}
+        preserveAspectRatio="none"
+      >
+        {/* Background grid */}
+        <pattern id="smallGrid" width="60" height="60" patternUnits="userSpaceOnUse">
+          <path d="M 60 0 L 0 0 0 60" fill="none" stroke="rgba(99, 102, 241, 0.08)" strokeWidth="0.5" />
+        </pattern>
+        
+        <rect width="100%" height="100%" fill="url(#smallGrid)" />
+        
+        {/* Doppler-like triangular patterns with straight lines */}
+        <path d="M0,0 L700,400 L1400,0" stroke="rgba(99, 102, 241, 0.2)" strokeWidth="1" fill="none" />
+        <path d="M0,400 L700,0 L1400,400" stroke="rgba(139, 92, 246, 0.15)" strokeWidth="1" fill="none" />
+        <path d="M0,800 L700,400 L1400,800" stroke="rgba(99, 102, 241, 0.2)" strokeWidth="1" fill="none" />
+        
+        {/* Additional connecting lines */}
+        <path d="M0,200 L1400,200" stroke="rgba(99, 102, 241, 0.08)" strokeWidth="0.5" fill="none" />
+        <path d="M0,600 L1400,600" stroke="rgba(99, 102, 241, 0.08)" strokeWidth="0.5" fill="none" />
+        
+        {/* Subtle vertical lines */}
+        <path d="M350,0 L350,800" stroke="rgba(139, 92, 246, 0.08)" strokeWidth="0.5" fill="none" />
+        <path d="M700,0 L700,800" stroke="rgba(139, 92, 246, 0.1)" strokeWidth="0.5" fill="none" />
+        <path d="M1050,0 L1050,800" stroke="rgba(139, 92, 246, 0.08)" strokeWidth="0.5" fill="none" />
+      </svg>
+    </div>
+  );
+}
+
 function App() {
   const [aircraftData, setAircraftData] = useState({});
   const [loading, setLoading] = useState(true);
@@ -138,13 +176,7 @@ function App() {
 
   return (
     <div className="min-h-screen relative overflow-x-hidden bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#2563eb]">
-      {/* Layered animated blurred gradient blobs for depth, with teal and white accents */}
-      <div className="fixed inset-0 -z-10 pointer-events-none">
-        <div className="absolute left-1/3 top-0 w-[60vw] h-[60vw] bg-blue-700/30 rounded-full blur-3xl animate-pulse-slow" />
-        <div className="absolute right-0 bottom-0 w-[40vw] h-[40vw] bg-indigo-500/20 rounded-full blur-2xl animate-pulse-slow" style={{animationDelay:'4s'}} />
-        <div className="absolute left-0 bottom-1/4 w-[30vw] h-[30vw] bg-teal-300/10 rounded-full blur-2xl animate-pulse-slow" style={{animationDelay:'2s'}} />
-        <div className="absolute left-1/2 top-1/3 w-[50vw] h-[30vw] -translate-x-1/2 bg-white/10 rounded-full blur-2xl" />
-      </div>
+      <CurvedLines />
       <Toaster position="top-right" richColors />
       <Header />
       <main className="main-content max-w-5xl mx-auto px-2 pb-16 pt-32">
@@ -188,5 +220,7 @@ function App() {
     </div>
   );
 }
+
+// We've moved all styles to index.css
 
 export default App;

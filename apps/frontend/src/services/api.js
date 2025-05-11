@@ -15,7 +15,7 @@ export const fetchAircraftList = async () => {
 
 export const generatePDF = async (pages) => {
   try {
-    const response = await axios.post(`${API_URL}/api/generate`, { pages }, {
+    const response = await axios.post(`${API_URL}/api/generate-pdf`, { pages }, {
       responseType: 'blob',
     });
     return response.data;
