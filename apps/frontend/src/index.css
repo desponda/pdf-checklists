@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
 @layer base {
   :root {
     --radius: 0.625rem;
@@ -79,10 +81,16 @@
     height: 100% !important;
     background-color: #09090b !important;
     background-image: 
-      radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-      radial-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-    background-size: 50px 50px, 25px 25px;
-    background-position: 0 0, 25px 25px;
+      url("data:image/svg+xml,%3Csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 40 C 150 80, 300 0, 500 80 S 700 140, 800 80 S 900 20, 1000 60' stroke='rgba(99, 102, 241, 0.10)' fill='none' stroke-width='1'/%3E%3Cpath d='M0 100 C 150 140, 300 80, 500 120 S 700 180, 800 120 S 900 60, 1000 100' stroke='rgba(139, 92, 246, 0.08)' fill='none' stroke-width='1'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0 C 120 20, 240 80, 360 40 S 480 0, 600 30 S 720 60, 840 30' stroke='rgba(99, 102, 241, 0.07)' fill='none' stroke-width='1'/%3E%3C/svg%3E");
+    background-size: 1000px 200px, 800px 100px;
+    background-position: 0 0, 0 0;
+    animation: bg-scroll 60s linear infinite;
+  }
+  
+  @keyframes bg-scroll {
+    from { background-position: 0 0, 0 0; }
+    to { background-position: -1000px 0, -800px 0; }
   }
 
   * {
