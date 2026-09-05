@@ -1,8 +1,9 @@
-const { PDFDocument } = require('pdf-lib');
+const { PDFDocument, rgb } = require('pdf-lib');
 const fetch = require('node-fetch');
 // Use global Buffer instead of importing from buffer module
 const fs = require('fs');
 const path = require('path');
+const { IMAGE_CACHE_DIR, ensureDir } = require('./cache');
 
 /**
  * Generate a PDF document from a list of image URLs
@@ -33,10 +34,8 @@ async function generatePDF(pages) {
       else if (pageInfo.url.includes('ebag_helicopter')) category = 'helicopter';
       else if (pageInfo.url.includes('ebag_military')) category = 'military';
       else if (pageInfo.url.includes('ebag_wip')) category = 'wip';
-      const cacheDir = path.join(__dirname, '../cache/images', category);
-      if (!fs.existsSync(cacheDir)) {
-        fs.mkdirSync(cacheDir, { recursive: true });
-      }
+      const cacheDir = path.join(IMAGE_CACHE_DIR, category);
+      ensureDir(cacheDir);
       const cacheFile = path.join(cacheDir, pageInfo.filename);
 
       let imageBuffer = null;
@@ -178,7 +177,7 @@ function addWarningPage(pdfDoc, successCount, totalPages, errors) {
     x: 50,
     y: height - 50,
     size: 20,
-    color: PDFDocument.rgb(0.8, 0, 0)
+    color: rgb(0.8, 0, 0)
   });
 
   warningPage.drawText(`Successfully loaded ${successCount} of ${totalPages} pages.`, {
@@ -192,7 +191,7 @@ function addWarningPage(pdfDoc, successCount, totalPages, errors) {
     x: 50,
     y: yPos,
     size: 12,
-    color: PDFDocument.rgb(0.7, 0, 0)
+    color: rgb(0.7, 0, 0)
   });
 
   errors.forEach((err, i) => {

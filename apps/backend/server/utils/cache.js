@@ -3,7 +3,14 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 
-const PDF_CACHE_DIR = path.join(__dirname, "../cache/pdfs");
+// Vercel's function filesystem is read-only apart from /tmp.  Keep the local
+// development layout unchanged, while routing ephemeral serverless caches to
+// the writable temp directory in production.
+const CACHE_ROOT = process.env.VERCEL
+    ? path.join("/tmp", "pdf-checklists")
+    : path.join(__dirname, "../cache");
+const PDF_CACHE_DIR = path.join(CACHE_ROOT, "pdfs");
+const IMAGE_CACHE_DIR = path.join(CACHE_ROOT, "images");
 const PDF_CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
 
 function ensureDir(dir) {
@@ -41,6 +48,8 @@ module.exports = {
     getPdfCacheFilePath,
     isPdfCacheValid,
     ensureDir,
+    CACHE_ROOT,
     PDF_CACHE_DIR,
+    IMAGE_CACHE_DIR,
     PDF_CACHE_TTL,
 };
