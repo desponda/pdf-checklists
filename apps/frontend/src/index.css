@@ -88,6 +88,10 @@
 .variant-copy div { display: flex; flex-direction: column; gap: 3px; }
 .variant-copy strong { color: #dbe8f1; font-size: 12px; }
 .variant-copy span { color: #8199ad; font-size: 11px; }
+.variant-options { display: inline-flex; align-items: center; gap: 4px; padding: 4px; border: 1px solid rgba(149,181,211,.18); border-radius: 4px; background: rgba(6,15,26,.55); }
+.variant-option { display: inline-flex; align-items: center; gap: 6px; min-width: 74px; justify-content: center; padding: 8px 10px; border: 1px solid transparent; border-radius: 3px; color: #8199ad; background: transparent; cursor: pointer; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .04em; text-transform: uppercase; transition: .18s ease; }
+.variant-option:hover { color: #dbe8f1; background: rgba(112,214,232,.08); }
+.variant-option.active { border-color: rgba(255,180,84,.55); color: #f8d49a; background: rgba(255,180,84,.12); }
 .selector-shell { width: 100%; }
 .selector-toolbar { display: grid; grid-template-columns: minmax(220px, 280px) auto 1fr auto; align-items: center; gap: 14px; margin-bottom: 24px; }
 .search-field { position: relative; display: flex; align-items: center; }
@@ -159,6 +163,9 @@
   .catalog-section { padding: 70px 0 82px; }
   .catalog-intro { display: block; }
   .catalog-note { margin-top: 20px; }
+  .variant-toggle { align-items: flex-start; flex-direction: column; }
+  .variant-options { width: 100%; }
+  .variant-option { flex: 1; }
   .aircraft-grid { grid-template-columns: 1fr; }
   .footer-inner, .footer-bottom { display: block; }
   .footer-links { margin-top: 24px; }
